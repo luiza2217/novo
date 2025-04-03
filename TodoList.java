@@ -1,75 +1,119 @@
+/*
+ * 
+ * CLASSE ListaDeTarefas:
+    CONSTANTE MAX_TAREFAS = 100
+    PROPRIEDADES PRIVADAS:
+        vetor de Tarefa tarefas com tamanho MAX_TAREFAS
+        inteiro quantidade = 0  // número de tarefas atuais
+        inteiro proximoId = 1   // id a ser usado na próxima tarefa
+
+    MÉTODO CONSTRUTOR():
+        inicializar o vetor tarefas com espaço para MAX_TAREFAS tarefas
+        definir quantidade como 0
+        definir proximoId como 1
+
+    MÉTODO adicionarTarefa(descricao):
+        SE quantidade >= MAX_TAREFAS:
+            exibir "Limite de tarefas atingido!"
+            retornar
+        criar nova tarefa com id = proximoId e descricao fornecida
+        adicionar essa tarefa no vetor na posição `quantidade`
+        incrementar quantidade em 1
+        incrementar proximoId em 1
+        exibir "Tarefa adicionada: " seguido da representação da tarefa
+
+    MÉTODO removerTarefa(id):
+        definir encontrado como falso
+        PARA i de 0 até (quantidade - 1):
+            SE tarefa na posição i tem id igual ao fornecido:
+                marcar encontrado como verdadeiro
+                PARA j de i até (quantidade - 2):
+                    mover tarefa da posição j+1 para a posição j
+                definir a última posição do vetor como nula
+                decrementar quantidade em 1
+                exibir "Tarefa removida com id: " seguido do id
+                sair do laço
+        SE não encontrado:
+            exibir "Tarefa não encontrada com id: " seguido do id
+
+    MÉTODO marcarTarefaComoConcluida(id):
+        PARA i de 0 até (quantidade - 1):
+            SE tarefa na posição i tem id igual ao fornecido:
+                marcar essa tarefa como concluída
+                exibir "Tarefa concluída: " seguido da tarefa
+                retornar
+        exibir "Tarefa não encontrada com id: " seguido do id
+
+    MÉTODO listarTarefas():
+        exibir "Lista de Tarefas:"
+        PARA i de 0 até (quantidade - 1):
+            exibir a tarefa na posição i
+
+ */
+
 public class TodoList {
-    public final int MAX_TASKS = 100; // final é constante, eu não posso mais criar ou alterar o dado
+    private final int MAX_TASKS = 100; // Tamanho máximo do array
     private Task[] tasks;
-    private int count;
+    private int count; // Número atual de tarefas
     private int nextId;
-    // criando método construtor que não recebe parametro, diferente do Task.java pois não recebe o parametro
- 
-    public TodoList(){
-        this.tasks = new Task[MAX_TASKS]; //definiu o array
-        this.count = 0;
-        this.nextId = 1;
 
-
-        // instanciar um OBJETO, ele vai manter na memória todos os dados que coloquei "números de vetores (tasks)", onde ele vai armazenar, tem o contador(count)
+    public TodoList() {
+        tasks = new Task[MAX_TASKS];
+        count = 0;
+        nextId = 1;
     }
 
-      
-       public void addTask(String description){
-        if(this.count >= MAX_TASKS){
-            System.out.printn("Limite de tarefas atingido");
-            return; // se ele é do tipo void ele não retorna nada, ele está retornando só para finalizar
-       
-        }  
-      Task newtask = new Task(this.nextId, description);
-    this.tasks[this.count] = newTask;
-    this.count = this.count + 1;
-    this.nextId ++;
-    System.out.println("Tarefa incluida com sucesso");
-
-}
-
- public void removeTask(int id){
-    boolean found = false;
-    for(int i=0; i < this.count; i++){
-        if(this.tasks[i].getId() == id){
-         found = true;
-         for(int j = i; j < this.count - 1; j++){
-            tasks[j] = tasks[j+1];
-         }
-         tasks[this.count -1] = null;
-         this.count -=1;
-         System.out.println("Tarefa removida");
-         break; // serve para parar o processo 
-
+    // Adiciona uma tarefa ao array
+    public void addTask(String description) {
+        if (count >= MAX_TASKS) {
+            System.out.println("Limite de tarefas atingido!");
+            return;
         }
-    } // o que nasce no bloco morre no bloco
- }
-
-public void makTaskCompleted(int id){
-    for( Task Jtask: this.tasks){
-      if(jtask == null){
-          break;
-      }
-      if(jtask.getId() == id){
-        jtask.makCompleted();
-        System.out.println("Tarefa concluida");
-        break;
-
-      
+        Task newTask = new Task(nextId, description);
+        tasks[count] = newTask;
+        count++;
+        nextId++;
+        System.out.println("Tarefa adicionada: " + newTask);
     }
-} 
 
-}
-    
-    public void listTasks(){
-        for(Task jtask: this.tasks){
-            if(jtask == null){
+    // Remove a tarefa com o ID especificado (realocando os elementos do array)
+    public void removeTask(int id) {
+        boolean found = false;
+        for (int i = 0; i < count; i++) {
+            if (tasks[i].getId() == id) {
+                found = true;
+                // Desloca os elementos para a esquerda
+                for (int j = i; j < count - 1; j++) {
+                    tasks[j] = tasks[j + 1];
+                }
+                tasks[count - 1] = null;
+                count--;
+                System.out.println("Tarefa removida com id: " + id);
                 break;
             }
-          System.out.println(jtask.toString());
-       
+        }
+        if (!found) {
+            System.out.println("Tarefa não encontrada com id: " + id);
         }
     }
 
+    // Marca uma tarefa como concluída
+    public void markTaskCompleted(int id) {
+        for (int i = 0; i < count; i++) {
+            if (tasks[i].getId() == id) {
+                tasks[i].markCompleted();
+                System.out.println("Tarefa concluída: " + tasks[i]);
+                return;
+            }
+        }
+        System.out.println("Tarefa não encontrada com id: " + id);
+    }
+
+    // Lista todas as tarefas
+    public void listTasks() {
+        System.out.println("Lista de Tarefas:");
+        for (int i = 0; i < count; i++) {
+            System.out.println(tasks[i]);
+        }
+    }
 }
